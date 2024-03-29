@@ -1,10 +1,40 @@
 version: '3'
 
 services:
-  backend:
+  db:
+    image: postgres:13
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - djangonetwork
+  api:
     restart: always
+    env_file:
+      - .env
     build: ../Game-Interface-Flows-Backend/
+    command: >
+      sh -c "python3 manage.py migrate &&
+             python3 manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME
+             python3 manage.py runserver 0.0.0.0:8000
+             "
     ports:
       - "8000:8000"
     container_name: backend
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - djangonetwork
+
+networks:
+  djangonetwork:
+    driver: bridge
+
+volumes:
+  db_data:
     
