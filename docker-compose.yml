@@ -4,11 +4,19 @@ services:
   db:
     image: postgres:13
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - djangonetwork
+  ml:
+    restart: always
+    build: ../Game-Interface-Flows-ML/
+    ports:
+      - "8001:8001"
+    container_name: ml
     networks:
       - djangonetwork
   api:
@@ -26,15 +34,24 @@ services:
     container_name: backend
     depends_on:
       - db
+      - ml
     links:
       - db:db
+      - ml:ml
     networks:
       - djangonetwork
+  client:
+    restart: always
+    build: ../Game-Interface-Flows-Frontend/
+    ports:
+      - "3000:3000"
+    container_name: client
+    depends_on:
+      - api
 
 networks:
   djangonetwork:
     driver: bridge
 
 volumes:
-  db_data:
-    
+  db:
