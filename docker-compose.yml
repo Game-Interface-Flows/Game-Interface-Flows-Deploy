@@ -14,6 +14,8 @@ services:
   ml:
     restart: always
     build: ../Game-Interface-Flows-ML/
+    command: >
+      sh -c "uvicorn api.app:app --reload --host 0.0.0.0 --por 8001 --log-level critical"
     ports:
       - "8001:8001"
     container_name: ml
