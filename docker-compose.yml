@@ -33,7 +33,7 @@ services:
              "
     ports:
       - "8000:8000"
-    container_name: backend
+    container_name: api
     depends_on:
       - db
       - ml
@@ -50,6 +50,10 @@ services:
     container_name: client
     depends_on:
       - api
+    links:
+      - api:api
+    networks:
+      - djangonetwork
 
 networks:
   djangonetwork:
