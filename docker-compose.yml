@@ -50,10 +50,6 @@ services:
     container_name: client
     depends_on:
       - api
-    links:
-      - api:api
-    networks:
-      - djangonetwork
 
 networks:
   djangonetwork:
