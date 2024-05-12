@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
     networks:
       - djangonetwork
   ml:
@@ -17,7 +19,7 @@ services:
     command: >
       sh -c "uvicorn api.app:app --reload --host 0.0.0.0 --port 8001 --log-level critical"
     ports:
-      - "8001:8001"
+      - "127.0.0.1:8001:8001"
     container_name: ml
     networks:
       - djangonetwork
@@ -32,7 +34,7 @@ services:
              python3 manage.py runserver 0.0.0.0:8000
              "
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     container_name: api
     depends_on:
       - db
