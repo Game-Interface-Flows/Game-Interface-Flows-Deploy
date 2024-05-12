@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     networks:
       - djangonetwork
   ml:
@@ -44,6 +44,11 @@ services:
       - ml:ml
     networks:
       - djangonetwork
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
   client:
     restart: always
     build: ../Game-Interface-Flows-Frontend/
@@ -52,6 +57,11 @@ services:
     container_name: client
     depends_on:
       - api
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   djangonetwork:
