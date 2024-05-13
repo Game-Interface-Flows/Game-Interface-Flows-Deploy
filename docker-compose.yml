@@ -36,7 +36,7 @@ services:
     command: celery -A config worker --pool solo -l info
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
-      - DJANGO_SETTINGS_MODULE=your_project_name.settings
+      - DJANGO_SETTINGS_MODULE=config.settings
     depends_on:
       - db
       - redis
