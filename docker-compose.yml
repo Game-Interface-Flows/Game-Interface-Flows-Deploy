@@ -13,6 +13,14 @@ services:
       - "127.0.0.1:5433:5432"
     networks:
       - djangonetwork
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks:
+      - djangonetwork
   ml:
     restart: always
     build: ../Game-Interface-Flows-ML/
@@ -23,6 +31,22 @@ services:
     container_name: ml
     networks:
       - djangonetwork
+  celery:
+    build: ../Game-Interface-Flows-Backend/
+    command: celery -A config worker --pool solo -l info
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - DJANGO_SETTINGS_MODULE=your_project_name.settings
+    depends_on:
+      - db
+      - redis
+    networks:
+      - djangonetwork
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
   api:
     restart: always
     env_file:
@@ -69,3 +93,4 @@ networks:
 
 volumes:
   db:
+  redis_data:
