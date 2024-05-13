@@ -34,6 +34,8 @@ services:
   celery:
     build: ../Game-Interface-Flows-Backend/
     command: celery -A config worker --pool solo -l info
+    env_file:
+      - .env
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - DJANGO_SETTINGS_MODULE=config.settings
